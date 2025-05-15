@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: weather_db
+    environment:
+      POSTGRES_USER: ${DB_USER:-weather_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-weather_db}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weather_user -d weather_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weather_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WEATHER_API_KEY: ${WEATHER_API_KEY}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-"5432"}
+      DB_USER: ${DB_USER:-weather_user}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-weather_db}
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+volumes:
+  dbdata:
