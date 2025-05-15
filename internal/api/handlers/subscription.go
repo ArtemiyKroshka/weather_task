@@ -6,6 +6,7 @@ import (
 	"time"
 	"weather_task/internal/db"
 	"weather_task/internal/models"
+	"weather_task/pkg/email"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -51,6 +52,9 @@ func SubscriptionHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Subscription successful. Confirmation email sent.",
 	})
+
+	email.NewSend(req.Email)
+
 }
 
 func UnsubscribeHandler(c *gin.Context) {

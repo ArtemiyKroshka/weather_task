@@ -11,30 +11,10 @@ import (
 	"weather_task/internal/models"
 )
 
-var (
-	ErrMissingAPIKey  = errors.New("missing WEATHER_API_KEY")
-	ErrInvalidRequest = errors.New("invalid request")
-	ErrCityNotFound   = errors.New("city not found")
-)
-
-var CITY_NOT_FOUND = 1006
-
 type Client struct {
 	baseURL    string
 	apiKey     string
 	httpClient *http.Client
-}
-
-func NewClient() (*Client, error) {
-	key := os.Getenv("WEATHER_API_KEY")
-	if key == "" {
-		return nil, ErrMissingAPIKey
-	}
-	return &Client{
-		baseURL:    "http://api.weatherapi.com/v1/current.json",
-		apiKey:     key,
-		httpClient: &http.Client{Timeout: 10 * time.Second},
-	}, nil
 }
 
 type rawErrorResponse struct {
@@ -52,6 +32,26 @@ type rawSuccessResponse struct {
 			Text string `json:"text"`
 		} `json:"condition"`
 	} `json:"current"`
+}
+
+var (
+	ErrMissingAPIKey  = errors.New("missing WEATHER_API_KEY")
+	ErrInvalidRequest = errors.New("invalid request")
+	ErrCityNotFound   = errors.New("city not found")
+)
+
+var CITY_NOT_FOUND = 1006
+
+func NewClient() (*Client, error) {
+	key := os.Getenv("WEATHER_API_KEY")
+	if key == "" {
+		return nil, ErrMissingAPIKey
+	}
+	return &Client{
+		baseURL:    "http://api.weatherapi.com/v1/current.json",
+		apiKey:     key,
+		httpClient: &http.Client{Timeout: 10 * time.Second},
+	}, nil
 }
 
 func (c *Client) GetWeather(city string) (models.Weather, error) {
