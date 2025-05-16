@@ -29,13 +29,13 @@ func sendEmail(to, subject, body string) error {
 
 	message := gomail.NewMessage()
 
-	message.SetHeader("From", os.Getenv("FROM_EMAIL"))
+	message.SetHeader("From", os.Getenv("SMTP_USER"))
 	message.SetHeader("To", to)
 	message.SetHeader("Subject", subject)
 
 	message.SetBody("text/html", body)
 
-	dialer := gomail.NewDialer(os.Getenv("SMTP_HOST"), 587, os.Getenv("FROM_EMAIL"), os.Getenv("FROM_EMAIL_PASSWORD"))
+	dialer := gomail.NewDialer(os.Getenv("SMTP_HOST"), 587, os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASSWORD"))
 
 	if err := dialer.DialAndSend(message); err != nil {
 		return err

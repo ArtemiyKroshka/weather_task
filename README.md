@@ -28,7 +28,7 @@ This will create a `.env` file from `.env.example`. Open `.env` and set the foll
 
 - `WEATHER_API_KEY` — your WeatherAPI.com API key
 - `SMTP_USER` — SMTP username
-- `SMTP_PASS` — SMTP password
+- `SMTP_PASSWORD` — SMTP password
 
 2. Run 'up' command
 
