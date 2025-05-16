@@ -45,3 +45,11 @@ func Migrate() {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 }
+
+func GetUser(email string) (models.Subscription, error) {
+	var user models.Subscription
+	if err := DB.Where("email = ?", email).First(&user).Error; err != nil {
+		return models.Subscription{}, err
+	}
+	return user, nil
+}

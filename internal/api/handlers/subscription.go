@@ -49,12 +49,17 @@ func SubscriptionHandler(c *gin.Context) {
 		return
 	}
 
+	err := email.SendConfirmationEMail(subscription.Email, subscription.Token)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to send confirmation email: " + err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Subscription successful. Confirmation email sent.",
 	})
-
-	email.NewSend(req.Email)
-
 }
 
 func UnsubscribeHandler(c *gin.Context) {
