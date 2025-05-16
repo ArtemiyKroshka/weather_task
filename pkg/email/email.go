@@ -54,12 +54,12 @@ func SendConfirmationEMail(to, token string) error {
 
 	confirmURL := fmt.Sprintf("%s/api/confirm/%s", baseURL, token)
 
-	subject := "Підтвердіть підписку на оновлення погоди"
+	subject := "Please Confirm Your Weather Update Subscription"
 	htmlBody := fmt.Sprintf(
-		`<p>Доброго дня!</p>
-			<p>Щоб підтвердити підписку на оновлення погоди, <a href="%s">натисніть тут</a>.</p>
-			<p>Якщо ви не реєструвалися, просто ігноруйте цей повідомлення.</p>
-			<hr>`,
+		`<p>Good day!</p>
+			 <p>To confirm your subscription to weather updates, <a href="%s">click here</a>.</p>
+			 <p>If you did not sign up, simply ignore this message.</p>
+			 <hr>`,
 		confirmURL)
 
 	return sendEmail(to, subject, htmlBody)
@@ -90,19 +90,19 @@ func SendWeatherEmail(to string) error {
 
 	date := time.Now().Format("2006-01-02 15:04:05")
 
-	subject := "Оновлення погоди"
+	subject := "Weather Update"
 	htmlBody := fmt.Sprintf(
-		`<p>Доброго дня! Нижче наведено детальний прогноз погоди на <strong>%s</strong> в місті %s:</p>
-     <ul style="list-style: none; padding: 0;">
-       <li><strong>🌡️ Температура:</strong> %.1f °C</li>
-       <li><strong>💧 Вологість:</strong> %.0f %%</li>
-       <li><strong>☁️ Опис:</strong> %s</li>
-     </ul>
-     <hr>
-     <p style="font-size:0.9em; color: #555;">
-       Якщо ви хочете відписатися, перейдіть за посиланням: 
-       <a href="%s">Відписатися</a>
-     </p>`,
+		`<p>Good day! Below is the detailed weather forecast for <strong>%s</strong> in %s:</p>
+			 <ul style="list-style: none; padding: 0;">
+				 <li><strong>🌡️ Temperature:</strong> %.1f °C</li>
+				 <li><strong>💧 Humidity:</strong> %.0f %%</li>
+				 <li><strong>☁️ Description:</strong> %s</li>
+			 </ul>
+			 <hr>
+			 <p style="font-size:0.9em; color: #555;">
+				 If you wish to unsubscribe, please click here:
+				 <a href="%s">Unsubscribe</a>
+			 </p>`,
 		date,
 		user.City,
 		weather.Temperature,
