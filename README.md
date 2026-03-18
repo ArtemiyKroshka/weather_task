@@ -1,22 +1,21 @@
 ### Weather Task
 
-A simple weather API application that allows users to:
+A weather subscription API that allows users to:
 
-- Get the current weather for a chosen city.
-- Subscribe an email address to receive weather updates (hourly or daily).
-- Confirm and unsubscribe via email tokens.
+- Get current weather for any city.
+- Subscribe an email address to receive hourly or daily weather updates.
+- Confirm and unsubscribe via tokens sent by email.
 
 ## Prerequisites
 
 - Docker Engine (v20.10+)
-- Docker Compose v2+ (or `docker-compose` for v1)
+- Docker Compose v2+
 - Make
+- Go 1.24+ (for local development)
 
 ---
 
-## Steps to start the app:
-
-> **Note:** All commands below use the `docker compose` syntax. If your Docker installation requires the standalone `docker-compose`, replace `docker compose` with `docker-compose` accordingly.
+## Getting started
 
 ### 1. Initialize environment file
 
@@ -24,34 +23,59 @@ A simple weather API application that allows users to:
 make init-env
 ```
 
-This will create a `.env` file from `.env.example`. Open `.env` and set the following:
+Open `.env` and set the required variables:
 
-- `WEATHER_API_KEY` — your WeatherAPI.com API key
-- `SMTP_USER` — SMTP username
-- `SMTP_PASSWORD` — SMTP password
+- `WEATHER_API_KEY` — your [WeatherAPI.com](https://www.weatherapi.com/) key
+- `SMTP_USER` — SMTP username (e.g. Gmail address)
+- `SMTP_PASSWORD` — SMTP password or app password
 
-2. Run 'up' command
+### 2. Start with Docker Compose
 
 ```
 make up
 ```
 
-This will:
+This builds the Go image and starts the API together with PostgreSQL.
 
-1. Build the Go API image
-2. Start application and PostgreSQL
+- API: `http://localhost:8080`
+- Interactive docs: `http://localhost:8080/docs`
 
-After startup:
+### 3. Stop
 
-- API is available at `http://localhost:8080`
+```
+make down
+```
+
+---
 
 ## API Endpoints
 
-All endpoints are prefixed with `/api`:
+Interactive Swagger UI is available at `http://localhost:8080/docs`.
 
-| Method | Path                       | Description                                        |
-| ------ | -------------------------- | -------------------------------------------------- |
-| GET    | `/api/weather?city={city}` | Get current weather (temperature, humidity, text). |
-| POST   | `/api/subscribe`           | Subscribe an email for updates.                    |
-| GET    | `/api/confirm/{token}`     | Confirm email subscription.                        |
-| GET    | `/api/unsubscribe/{token}` | Unsubscribe from updates.                          |
+| Method   | Path                                        | Description                                      |
+|----------|---------------------------------------------|--------------------------------------------------|
+| `GET`    | `/api/weather?city={city}`                  | Get current weather (temperature, humidity, ...) |
+| `POST`   | `/api/subscriptions`                        | Subscribe an email for updates                   |
+| `POST`   | `/api/subscriptions/confirm/{token}`        | Confirm email subscription                       |
+| `DELETE` | `/api/subscriptions/{token}`                | Unsubscribe from updates                         |
+
+### Subscribe (form-encoded body)
+
+```
+POST /api/subscriptions
+Content-Type: application/x-www-form-urlencoded
+
+email=user@example.com&city=Kyiv&frequency=daily
+```
+
+---
+
+## Development
+
+```bash
+# Run tests
+make test
+
+# Build binary
+make build
+```
